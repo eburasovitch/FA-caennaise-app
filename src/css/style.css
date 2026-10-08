@@ -1,0 +1,196 @@
+/* Force Athlétique Caennaise · voir DESIGN.md */
+
+@font-face { font-family: "Barlow Condensed"; font-weight: 600; font-display: swap; src: url("../fonts/barlow-condensed-latin-600-normal.woff2") format("woff2"); }
+@font-face { font-family: "Barlow Condensed"; font-weight: 800; font-display: swap; src: url("../fonts/barlow-condensed-latin-800-normal.woff2") format("woff2"); }
+@font-face { font-family: "Barlow"; font-weight: 400; font-display: swap; src: url("../fonts/barlow-latin-400-normal.woff2") format("woff2"); }
+@font-face { font-family: "Barlow"; font-weight: 500; font-display: swap; src: url("../fonts/barlow-latin-500-normal.woff2") format("woff2"); }
+@font-face { font-family: "Barlow"; font-weight: 600; font-display: swap; src: url("../fonts/barlow-latin-600-normal.woff2") format("woff2"); }
+
+:root {
+  --ink: #141111;
+  --surface: #1d1917;
+  --line: #3a3330;
+  --bone: #f2ebe0;
+  --muted: #b9aea2;
+  --blood: #8a1f1d;
+  --bronze: #c9a46a;
+  --bronze-hi: #dbbb86;
+
+  --display: "Barlow Condensed", "Arial Narrow", sans-serif;
+  --body: "Barlow", system-ui, sans-serif;
+
+  --gutter: clamp(1rem, 4vw, 2rem);
+  --section: clamp(4rem, 9vw, 7rem);
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+
+  color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 5rem; }
+body {
+  margin: 0;
+  background: var(--ink);
+  color: var(--bone);
+  font: 400 1.0625rem/1.6 var(--body);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+img, iframe { display: block; max-width: 100%; }
+a { color: inherit; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+:focus-visible { outline: 3px solid var(--bronze); outline-offset: 3px; }
+
+h1, h2, h3 {
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  line-height: 0.95;
+  text-wrap: balance;
+}
+h1 { font-size: clamp(3rem, 8vw, 6rem); }
+h2 { font-size: clamp(2.25rem, 5vw, 3.75rem); }
+h3 { font-size: 1.75rem; }
+p { margin: 0; text-wrap: pretty; }
+
+.wrap { width: min(100% - 2 * var(--gutter), 1200px); margin-inline: auto; }
+
+.skip {
+  position: absolute; left: 1rem; top: -4rem; z-index: 20;
+  padding: .75rem 1rem; background: var(--bronze); color: var(--ink); font-weight: 600;
+}
+.skip:focus { top: 1rem; }
+
+/* Boutons */
+.btn {
+  display: inline-flex; align-items: center; gap: .6rem;
+  min-height: 3rem; padding: .75rem 1.4rem;
+  font: 600 1.125rem/1 var(--display);
+  text-transform: uppercase; letter-spacing: .04em;
+  text-decoration: none; white-space: nowrap;
+  border: 2px solid transparent;
+  transition: transform 180ms var(--ease), background-color 180ms var(--ease), color 180ms var(--ease);
+}
+.btn svg { width: 1.1em; height: 1.1em; flex: none; }
+.btn:hover { transform: translateY(-2px); }
+.btn:active { transform: translateY(1px); }
+.btn--primary { background: var(--bronze); color: var(--ink); }
+.btn--primary:hover { background: var(--bronze-hi); }
+.btn--ghost { border-color: var(--bone); color: var(--bone); }
+.btn--ghost:hover { background: var(--bone); color: var(--ink); }
+.btn--sm { min-height: 2.5rem; padding: .5rem 1rem; font-size: 1rem; }
+.actions { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: 2rem; }
+
+/* Navigation */
+.nav {
+  position: sticky; top: 0; z-index: 10;
+  background: color-mix(in srgb, var(--ink) 92%, transparent);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--line);
+}
+.nav__inner { display: flex; align-items: center; gap: 1.5rem; min-height: 4.25rem; }
+.brand {
+  display: flex; align-items: center; gap: .75rem; margin-right: auto;
+  text-decoration: none; font: 600 1.125rem/1 var(--display); text-transform: uppercase; letter-spacing: .04em;
+}
+.brand img { width: 54px; height: auto; }
+.brand b { color: var(--bronze); font-weight: 600; }
+.nav__links { display: flex; gap: 1.75rem; margin: 0; padding: 0; list-style: none; }
+.nav__links a {
+  font: 600 1rem/1 var(--display); text-transform: uppercase; letter-spacing: .06em;
+  text-decoration: none; color: var(--muted); transition: color 180ms var(--ease);
+}
+.nav__links a:hover { color: var(--bone); }
+
+/* Hero */
+.hero { padding-block: clamp(2.5rem, 6vw, 5rem); }
+.hero__grid { display: grid; gap: 2.5rem; align-items: center; }
+.hero h1 span { display: block; color: var(--bronze); }
+.lead { margin-top: 1.5rem; max-width: 34ch; font-size: clamp(1.125rem, 1.6vw, 1.3rem); color: var(--muted); }
+.hero__visual {
+  display: grid; place-items: center;
+  aspect-ratio: 6 / 5;
+  background:
+    repeating-linear-gradient(135deg, transparent 0 22px, rgb(0 0 0 / .12) 22px 24px),
+    var(--blood);
+}
+.hero__visual img { width: min(62%, 300px); height: auto; box-shadow: 0 24px 60px rgb(20 6 5 / .55); }
+
+/* Les trois mouvements */
+.lifts { padding-block: var(--section); border-top: 1px solid var(--line); }
+.section-lead { margin-top: 1.25rem; max-width: 58ch; color: var(--muted); }
+.lifts__list { list-style: none; margin: 3rem 0 0; padding: 0; display: grid; gap: 0; }
+.lifts__list li {
+  display: grid; gap: .5rem 3rem;
+  padding-block: 1.75rem;
+  border-top: 1px solid var(--line);
+}
+.lifts__list h3 { font-size: clamp(2.5rem, 6vw, 4.5rem); color: var(--bone); transition: color 180ms var(--ease); }
+.lifts__list li:hover h3 { color: var(--bronze); }
+.lifts__list p { max-width: 46ch; color: var(--muted); align-self: center; }
+
+/* Le club */
+.club { padding-block: var(--section); background: var(--surface); }
+.club__grid { display: grid; gap: 2.5rem; align-items: center; }
+.club__photo {
+  display: grid; place-items: center; aspect-ratio: 4 / 3;
+  background: var(--ink); border: 1px dashed var(--line);
+  color: var(--muted); font: 600 1rem/1 var(--display); text-transform: uppercase; letter-spacing: .06em;
+}
+.club__text p { margin-top: 1.25rem; max-width: 56ch; color: var(--muted); }
+.facts { list-style: none; margin: 2rem 0 0; padding: 0; display: grid; gap: 1.25rem; }
+.facts li { padding-left: 1rem; border-left: 3px solid var(--blood); color: var(--muted); }
+.facts strong {
+  display: block; margin-bottom: .2rem;
+  font: 600 1.25rem/1.1 var(--display); text-transform: uppercase; letter-spacing: .04em; color: var(--bone);
+}
+
+/* Infos pratiques */
+.infos { padding-block: var(--section); }
+.infos__grid { display: grid; gap: 2.5rem; align-items: stretch; }
+.details { margin: 2rem 0 0; display: grid; gap: 1.25rem; }
+.details div { display: grid; gap: .25rem; }
+.details dt { font: 600 .95rem/1 var(--display); text-transform: uppercase; letter-spacing: .08em; color: var(--bronze); }
+.details dd { margin: 0; font-size: 1.125rem; }
+.map { min-height: 320px; border: 1px solid var(--line); background: var(--surface); }
+.map iframe { width: 100%; height: 100%; min-height: 320px; border: 0; filter: grayscale(.6) contrast(1.05); }
+
+/* Pied de page */
+.footer { padding-block: 2.5rem; background: var(--blood); }
+.footer__inner { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 1.25rem; }
+.footer p { line-height: 1.5; }
+.footer__link { display: inline-flex; align-items: center; gap: .5rem; font-weight: 600; text-underline-offset: .2em; }
+.footer__link svg { width: 1.25rem; height: 1.25rem; }
+
+/* Mobile */
+@media (max-width: 767px) {
+  .nav__links, .nav .btn--sm { display: none; }
+  .brand span { font-size: 1rem; }
+}
+
+/* Tablette et plus */
+@media (min-width: 768px) {
+  .lifts__list li { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); }
+  .club__grid { grid-template-columns: 1fr 1fr; gap: 4rem; }
+}
+
+/* Desktop */
+@media (min-width: 1024px) {
+  .hero__grid { grid-template-columns: 1.15fr 1fr; gap: 4rem; }
+  .hero { min-height: calc(100dvh - 4.25rem); display: grid; align-items: center; }
+  .infos__grid { grid-template-columns: 1fr 1.1fr; gap: 4rem; }
+}
+
+/* Apparition au chargement */
+@media (prefers-reduced-motion: no-preference) {
+  .hero__text > *, .hero__visual { animation: rise 700ms var(--ease) both; }
+  .hero__text > :nth-child(2) { animation-delay: 80ms; }
+  .hero__text > :nth-child(3) { animation-delay: 160ms; }
+  .hero__visual { animation-delay: 120ms; }
+  @keyframes rise { from { opacity: 0; transform: translateY(16px); } }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .btn, .btn:hover, .btn:active { transition: none; transform: none; }
+}

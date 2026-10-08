@@ -3,13 +3,147 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>FA Caen</title>
-  <meta name="description" content="Site officiel de FA Caen.">
+  <title>Force Athlétique Caennaise · Club de force athlétique à Caen</title>
+  <meta name="description" content="Association de force athlétique à Caen&nbsp;: squat, développé couché et soulevé de terre, pour débutants comme compétiteurs. Club affilié FFForce.">
+  <meta name="theme-color" content="#141111">
+  <meta property="og:title" content="Force Athlétique Caennaise">
+  <meta property="og:description" content="Club de force athlétique à Caen, affilié à la FFForce.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="img/logo-fac.png">
+  <link rel="icon" href="img/logo-fac.png">
+  <link rel="preload" href="fonts/barlow-condensed-latin-800-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <main>
-    <h1>FA Caen</h1>
-    <p>Site en construction.</p>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <!-- Icônes Phosphor (graisse bold), MIT -->
+    <symbol id="i-arrow" viewBox="0 0 256 256"><path fill="currentColor" d="M224.49,136.49l-72,72a12,12,0,0,1-17-17L187,140H40a12,12,0,0,1,0-24H187L135.51,64.48a12,12,0,0,1,17-17l72,72A12,12,0,0,1,224.49,136.49Z"/></symbol>
+    <symbol id="i-out" viewBox="0 0 256 256"><path fill="currentColor" d="M204,64V168a12,12,0,0,1-24,0V93L72.49,200.49a12,12,0,0,1-17-17L163,76H88a12,12,0,0,1,0-24H192A12,12,0,0,1,204,64Z"/></symbol>
+    <symbol id="i-insta" viewBox="0 0 256 256"><path fill="currentColor" d="M128,80a48,48,0,1,0,48,48A48.05,48.05,0,0,0,128,80Zm0,72a24,24,0,1,1,24-24A24,24,0,0,1,128,152ZM176,20H80A60.07,60.07,0,0,0,20,80v96a60.07,60.07,0,0,0,60,60h96a60.07,60.07,0,0,0,60-60V80A60.07,60.07,0,0,0,176,20Zm36,156a36,36,0,0,1-36,36H80a36,36,0,0,1-36-36V80A36,36,0,0,1,80,44h96a36,36,0,0,1,36,36ZM196,76a16,16,0,1,1-16-16A16,16,0,0,1,196,76Z"/></symbol>
+    <symbol id="i-pin" viewBox="0 0 256 256"><path fill="currentColor" d="M128,60a44,44,0,1,0,44,44A44.05,44.05,0,0,0,128,60Zm0,64a20,20,0,1,1,20-20A20,20,0,0,1,128,124Zm0-112a92.1,92.1,0,0,0-92,92c0,77.36,81.64,135.4,85.12,137.83a12,12,0,0,0,13.76,0,259,259,0,0,0,42.18-39C205.15,170.57,220,136.37,220,104A92.1,92.1,0,0,0,128,12Zm31.3,174.71A249.35,249.35,0,0,1,128,216.89a249.35,249.35,0,0,1-31.3-30.18C80,167.37,60,137.31,60,104a68,68,0,0,1,136,0C196,137.31,176,167.37,159.3,186.71Z"/></symbol>
+  </svg>
+
+  <a class="skip" href="#contenu">Aller au contenu</a>
+
+  <header class="nav">
+    <div class="wrap nav__inner">
+      <a class="brand" href="./" aria-label="Force Athlétique Caennaise, accueil">
+        <img src="img/logo-fac.png" alt="" width="54" height="41">
+        <span>Force Athlétique <b>Caennaise</b></span>
+      </a>
+      <nav aria-label="Navigation principale">
+        <ul class="nav__links">
+          <li><a href="#discipline">La discipline</a></li>
+          <li><a href="#club">Le club</a></li>
+          <li><a href="#infos">Infos pratiques</a></li>
+        </ul>
+      </nav>
+      <a class="btn btn--primary btn--sm" href="#infos">Venir essayer</a>
+    </div>
+  </header>
+
+  <main id="contenu">
+    <section class="hero">
+      <div class="wrap hero__grid">
+        <div class="hero__text">
+          <h1>Soulever lourd, <span>à Caen.</span></h1>
+          <p class="lead">Squat, développé couché, soulevé de terre. Un club associatif pour progresser, du premier entraînement à la compétition.</p>
+          <div class="actions">
+            <a class="btn btn--primary" href="#infos">Venir essayer <svg aria-hidden="true"><use href="#i-arrow"/></svg></a>
+            <a class="btn btn--ghost" href="#discipline">La discipline</a>
+          </div>
+        </div>
+        <div class="hero__visual">
+          <!-- TODO : remplacer par une photo du club (entraînement ou compétition), 1200 × 1400 -->
+          <img src="img/logo-fac.png" fetchpriority="high" alt="Logo de la Force Athlétique Caennaise : casque viking sur un bouclier, devant une barre chargée" width="200" height="152">
+        </div>
+      </div>
+    </section>
+
+    <section id="discipline" class="lifts">
+      <div class="wrap">
+        <h2>Trois mouvements. Une barre.</h2>
+        <p class="section-lead">La force athlétique se joue sur la charge maximale soulevée dans chacun de ces mouvements, additionnée en un total.</p>
+        <ol class="lifts__list">
+          <li>
+            <h3>Squat</h3>
+            <p>La barre sur le dos, on descend hanches sous les genoux, puis on remonte debout.</p>
+          </li>
+          <li>
+            <h3>Développé couché</h3>
+            <p>Allongé sur le banc, la barre touche la poitrine, marque un temps d’arrêt, puis repart bras tendus.</p>
+          </li>
+          <li>
+            <h3>Soulevé de terre</h3>
+            <p>Depuis le sol jusqu’à la position debout, épaules en arrière. Le mouvement le plus lourd des trois.</p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <section id="club" class="club">
+      <div class="wrap club__grid">
+        <div class="club__photo">
+          <!-- TODO : photo de la salle ou d'un entraînement collectif, 1200 × 900 -->
+          <p>Photo du club à venir</p>
+        </div>
+        <div class="club__text">
+          <h2>Un club, pas une salle de sport</h2>
+          <p>La Force Athlétique Caennaise est une association affiliée à la Fédération Française de Force. On s’y entraîne ensemble, on apprend la technique et on se soutient les jours de compétition.</p>
+          <ul class="facts">
+            <li><strong>Tous niveaux</strong> Débutants, confirmés et compétiteurs partagent la même salle.</li>
+            <li><strong>École de sport</strong> Les jeunes y découvrent la discipline avec un encadrement adapté.</li>
+            <li><strong>Sport propre</strong> Le club a signé la charte d’engagement contre le dopage.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="infos" class="infos">
+      <div class="wrap infos__grid">
+        <div>
+          <h2>Venir essayer</h2>
+          <p class="section-lead">Le plus simple&nbsp;: passer nous voir à la salle, ou nous écrire sur Instagram pour connaître les créneaux.</p>
+          <dl class="details">
+            <div>
+              <dt>Adresse</dt>
+              <!-- TODO : confirmer l'adresse (FFForce indique 44 Clos du Poteau Rouge) -->
+              <dd>44 Clos du Poteau Rouge<br>14000 Caen</dd>
+            </div>
+            <div>
+              <dt>Horaires</dt>
+              <!-- TODO : créneaux d'entraînement -->
+              <dd>Sur demande, par message Instagram</dd>
+            </div>
+            <div>
+              <dt>Adhésion</dt>
+              <!-- TODO : tarifs de la licence et de la cotisation -->
+              <dd>Licence FFForce et cotisation annuelle, tarifs sur demande</dd>
+            </div>
+          </dl>
+          <div class="actions">
+            <a class="btn btn--primary" href="https://www.instagram.com/force_athletique_caennaise/" rel="noopener">
+              <svg aria-hidden="true"><use href="#i-insta"/></svg> Écrire sur Instagram
+            </a>
+            <a class="btn btn--ghost" href="https://www.google.com/maps/place/FAC/@49.1963941,-0.3428335,502m/data=!3m1!1e3!4m6!3m5!1s0x480a69002ac52df1:0xf6dc8a126c059129!8m2!3d49.196457!4d-0.3415612!16s%2Fg%2F11yppnhkfx" rel="noopener">
+              <svg aria-hidden="true"><use href="#i-pin"/></svg> Itinéraire
+            </a>
+          </div>
+        </div>
+        <div class="map">
+          <iframe title="Carte&nbsp;: emplacement de la salle de la Force Athlétique Caennaise" src="https://www.google.com/maps?q=49.196457,-0.3415612&amp;z=16&amp;output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        </div>
+      </div>
+    </section>
   </main>
+
+  <footer class="footer">
+    <div class="wrap footer__inner">
+      <p><strong>Force Athlétique Caennaise</strong><br>Association loi 1901, affiliée à la FFForce</p>
+      <a class="footer__link" href="https://www.instagram.com/force_athletique_caennaise/" rel="noopener">
+        <svg aria-hidden="true"><use href="#i-insta"/></svg> @force_athletique_caennaise
+      </a>
+    </div>
+  </footer>
 </body>
 </html>
