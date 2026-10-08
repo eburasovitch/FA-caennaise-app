@@ -1,4 +1,4 @@
-# fa-caen-site
+# FA-caennaise-app
 
 Site statique de FA Caen, publié sur GitHub Pages.
 
