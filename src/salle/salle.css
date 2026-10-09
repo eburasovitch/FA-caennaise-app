@@ -1,0 +1,69 @@
+/* Page « La salle » · DA v2 (voir DESIGN.md) */
+@font-face { font-family: Anton; src: url("../fonts/anton-latin-400-normal.woff2") format("woff2"); font-display: swap; }
+@font-face { font-family: "JetBrains Mono"; font-weight: 500; src: url("../fonts/jetbrains-mono-latin-500-normal.woff2") format("woff2"); font-display: swap; }
+@font-face { font-family: "Hanken Grotesk"; font-weight: 400; src: url("../fonts/hanken-grotesk-latin-400-normal.woff2") format("woff2"); font-display: swap; }
+@font-face { font-family: "Hanken Grotesk"; font-weight: 600; src: url("../fonts/hanken-grotesk-latin-600-normal.woff2") format("woff2"); font-display: swap; }
+
+:root {
+  --fonte: #0b0b0b; --plateau: #171717; --rack: #2a2a2a;
+  --craie: #f4f1ea; --poussiere: #a8a29a; --rouge: #d42a24; --rouge-hi: #e8352e;
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  color-scheme: dark;
+}
+*, *::before, *::after { box-sizing: border-box; }
+body { margin: 0; background: var(--fonte); color: var(--craie); font: 400 1.0625rem/1.6 "Hanken Grotesk", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+a, button { color: inherit; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+:focus-visible { outline: 2px solid var(--rouge); outline-offset: 3px; }
+.wrap { width: min(100% - 2 * clamp(1rem, 4vw, 3rem), 1320px); margin-inline: auto; }
+.mono { font: 500 .875rem/1.3 "JetBrains Mono", monospace; text-transform: uppercase; letter-spacing: .04em; }
+.muted { color: var(--poussiere); }
+.small { font-size: .75rem; }
+h1, h2, h3 { font-family: Anton, sans-serif; font-weight: 400; text-transform: uppercase; line-height: .9; margin: 0; }
+.outline { color: transparent; -webkit-text-stroke: 2px var(--craie); }
+.skip { position: absolute; left: 1rem; top: -4rem; z-index: 30; padding: .75rem 1rem; background: var(--rouge); }
+.skip:focus { top: 1rem; }
+.link { text-decoration: underline; text-underline-offset: 6px; transition: color 180ms var(--ease); }
+.link:hover { color: var(--rouge); }
+
+.top { border-bottom: 1px solid var(--rack); }
+.top__inner { display: flex; justify-content: space-between; align-items: center; gap: 1rem; min-height: 4rem; }
+.brand { display: flex; align-items: center; gap: .75rem; font: 400 1.125rem/1 Anton; text-transform: uppercase; text-decoration: none; }
+
+.intro { padding-block: clamp(3rem, 7vw, 5rem) 2rem; }
+.intro h1 { font-size: clamp(3.5rem, 10vw, 8rem); margin-top: .75rem; }
+.lead { max-width: 52ch; margin: 1.25rem 0 0; color: var(--poussiere); }
+
+.viewer__stage { position: relative; height: min(78vh, 760px); min-height: 420px; background: var(--plateau); border-block: 1px solid var(--rack); overflow: hidden; }
+#scene { display: block; width: 100%; height: 100%; touch-action: none; }
+.viewer__overlay { position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; gap: 1rem; text-align: center; padding: 1.5rem;
+  background: repeating-linear-gradient(90deg, #151515 0 120px, #121212 120px 240px); }
+.viewer__overlay[hidden] { display: none; }
+.help { margin: .75rem auto 0; }
+
+.btn { display: inline-flex; align-items: center; height: 3rem; padding: 0 1.5rem; border: 0; cursor: pointer; font: 500 .9375rem/1 "JetBrains Mono", monospace; text-transform: uppercase; letter-spacing: .04em; transition: background-color 180ms var(--ease), transform 180ms var(--ease); }
+.btn--p { background: var(--rouge); color: var(--craie); }
+.btn--p:hover { background: var(--rouge-hi); }
+.btn:active { transform: translateY(1px); }
+.btn:disabled { opacity: .6; cursor: progress; }
+
+.hotspots { position: absolute; inset: 0; pointer-events: none; }
+.hotspot { position: absolute; left: 0; top: 0; pointer-events: auto; cursor: pointer;
+  width: 44px; height: 44px; margin: -22px 0 0 -22px; padding: 0; border: 0; background: none; }
+.hotspot::before { content: ""; position: absolute; inset: 12px; background: var(--rouge); border: 2px solid var(--craie); border-radius: 50%; transition: transform 180ms var(--ease); }
+.hotspot span { position: absolute; left: 40px; top: 50%; translate: 0 -50%; white-space: nowrap; padding: .35rem .6rem; background: rgb(11 11 11 / .85); font: 500 .75rem/1 "JetBrains Mono"; text-transform: uppercase; letter-spacing: .04em; opacity: 0; transition: opacity 180ms var(--ease); }
+.hotspot:hover::before, .hotspot[aria-pressed="true"]::before { transform: scale(1.25); }
+.hotspot:hover span, .hotspot:focus-visible span, .hotspot[aria-pressed="true"] span { opacity: 1; }
+
+.card { position: absolute; right: 1rem; bottom: 1rem; width: min(360px, calc(100% - 2rem)); padding: 1.5rem; background: rgb(11 11 11 / .92); border: 1px solid var(--rack); }
+.card h2 { font-size: 1.75rem; padding-right: 2rem; }
+.card p { margin: .75rem 0 0; color: var(--poussiere); }
+.card__close { position: absolute; top: .5rem; right: .5rem; width: 44px; height: 44px; border: 0; background: none; font-size: 1.5rem; cursor: pointer; }
+
+.equipment { padding-block: clamp(4rem, 8vw, 6rem); }
+.equipment h2 { font-size: clamp(2.5rem, 6vw, 4.5rem); }
+.equipment__list { list-style: none; margin: 2rem 0 0; padding: 0; display: grid; }
+.equipment__list li { display: grid; gap: .5rem 3rem; padding-block: 1.5rem; border-top: 1px solid var(--rack); }
+.equipment__list h3 { font-size: 1.75rem; }
+.equipment__list p { margin: 0; color: var(--poussiere); max-width: 52ch; }
+@media (min-width: 768px) { .equipment__list li { grid-template-columns: 1fr 1.2fr; align-items: center; } }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }

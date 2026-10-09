@@ -1,0 +1,17 @@
+{
+  "_note": "Exemple de test. À remplacer quand le vrai scan arrive : fichier, orientation, caméra et positions du matériel.",
+  "scan": {
+    "url": "salle/scan-test.ply",
+    "taille": "9 Mo",
+    "rotation": [0, 0, 0],
+    "position": [0, 0, 0],
+    "echelle": 1
+  },
+  "camera": { "position": [0, 2.6, 6.2], "cible": [0, 0.9, 0] },
+  "materiel": [
+    { "id": "rack-1", "nom": "Rack de squat", "detail": "Rack combo avec chandelles réglables et sécurités. Exemple.", "position": [-2, 2.45, -1.5] },
+    { "id": "rack-2", "nom": "Rack combo", "detail": "Rack de compétition, utilisable en squat et en développé couché. Exemple.", "position": [1.5, 2.45, -1.5] },
+    { "id": "banc", "nom": "Banc de développé couché", "detail": "Banc de compétition aux normes FFForce. Exemple.", "position": [0, 0.75, 1.2] },
+    { "id": "plateforme", "nom": "Plateforme de soulevé de terre", "detail": "Plateforme bois et caoutchouc pour tirer lourd sans abîmer le sol. Exemple.", "position": [2.2, 0.35, 1.7] }
+  ]
+}

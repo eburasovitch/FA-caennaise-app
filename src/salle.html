@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>La salle en 3D · Force Athlétique Caennaise</title>
+  <meta name="description" content="Visitez la salle de la Force Athlétique Caennaise en 3D et découvrez le matériel disponible.">
+  <meta name="theme-color" content="#0b0b0b">
+  <link rel="icon" href="img/logo-fac.png">
+  <link rel="stylesheet" href="salle/salle.css">
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "./vendor/three/three.module.js",
+        "three/addons/": "./vendor/three/addons/",
+        "@sparkjsdev/spark": "./vendor/spark/spark.module.min.js"
+      }
+    }
+  </script>
+</head>
+<body>
+  <a class="skip" href="#contenu">Aller au contenu</a>
+  <header class="top">
+    <div class="wrap top__inner">
+      <a class="brand" href="./"><img src="img/logo-fac.png" alt="" width="44" height="33"> Force Athlétique Caennaise</a>
+      <a class="mono link" href="./">Retour à l’accueil</a>
+    </div>
+  </header>
+
+  <main id="contenu">
+    <section class="wrap intro">
+      <p class="mono muted">Visite virtuelle</p>
+      <h1>La <span class="outline">salle</span></h1>
+      <p class="lead">Tournez autour du matériel, zoomez, et touchez les points rouges pour voir ce que propose chaque poste.</p>
+    </section>
+
+    <section class="viewer" aria-label="Visite 3D de la salle">
+      <div class="viewer__stage" id="stage">
+        <canvas id="scene" aria-hidden="true"></canvas>
+        <div class="hotspots" id="hotspots"></div>
+        <div class="viewer__overlay" id="overlay">
+          <p class="mono muted" id="status">Scan 3D de la salle</p>
+          <button class="btn btn--p" id="start" type="button">Lancer la visite 3D</button>
+          <p class="mono muted small" id="weight"></p>
+        </div>
+        <aside class="card" id="card" hidden aria-live="polite">
+          <button class="card__close" id="card-close" type="button" aria-label="Fermer la fiche">×</button>
+          <h2 id="card-title"></h2>
+          <p id="card-text"></p>
+        </aside>
+      </div>
+      <p class="wrap mono muted small help">Glisser pour tourner, pincer ou molette pour zoomer, deux doigts pour se déplacer</p>
+    </section>
+
+    <section class="wrap equipment" aria-labelledby="titre-materiel">
+      <h2 id="titre-materiel">Le matériel</h2>
+      <ul class="equipment__list" id="list"></ul>
+    </section>
+  </main>
+
+  <script type="module" src="salle/salle.js"></script>
+</body>
+</html>
