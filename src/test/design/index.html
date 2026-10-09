@@ -1,0 +1,807 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex"></head><body>
+<title>FA Caen, version de test</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Hanken+Grotesk:wght@400;600&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Charte DA v2. Trois sites complets, un visible à la fois : 1 sombre + barre 3D, 2 clair éditorial, 3 grille « feuille de match ». */
+:root {
+  --fonte: #0b0b0b; --plateau: #171717; --rack: #2a2a2a;
+  --craie: #f4f1ea; --poussiere: #a8a29a; --rouge: #d42a24; --rouge-hover: #e8352e;
+  --encre2: #57524b; --papier2: #e9e4d9;
+  --display: "Anton", "Impact", "Arial Narrow", sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", monospace;
+  --body: "Hanken Grotesk", system-ui, sans-serif;
+  --gut: clamp(1rem, 4vw, 3rem);
+  /* tokens courants, redéfinis par design */
+  --bg: var(--fonte); --fg: var(--craie); --fg2: var(--poussiere); --line: var(--rack); --panel: var(--plateau);
+  color-scheme: dark;
+}
+body[data-d="2"] { --bg: var(--craie); --fg: var(--fonte); --fg2: var(--encre2); --line: #cfc8bb; --panel: var(--papier2); color-scheme: light; }
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { overflow-x: clip; }
+body { background: var(--bg); color: var(--fg); font: 400 1.0625rem/1.6 var(--body); -webkit-font-smoothing: antialiased; }
+.g { padding-inline: var(--gut); }
+.wrap { max-width: 1320px; margin-inline: auto; }
+.mono { font: 500 .875rem/1.35 var(--mono); text-transform: uppercase; letter-spacing: .04em; }
+.muted { color: var(--fg2); }
+h1, h2, h3 { font-family: var(--display); font-weight: 400; text-transform: uppercase; line-height: .95; margin: 0; text-wrap: balance; }
+p { margin: 0; }
+a { color: inherit; }
+:focus-visible { outline: 2px solid var(--fg); outline-offset: 3px; }
+button { font: inherit; color: inherit; }
+section[id] { scroll-margin-top: 80px; }
+.outline { color: transparent; -webkit-text-stroke: 2px var(--fg); }
+
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: .6rem; min-height: 48px; padding: 0 1.4rem; font: 500 .875rem/1 var(--mono); text-transform: uppercase; letter-spacing: .04em; text-decoration: none; border: 1px solid var(--fg); background: none; color: var(--fg); cursor: pointer; transition: background-color .15s, color .15s; }
+.btn:hover { background: var(--fg); color: var(--bg); }
+.btn--p { background: var(--rouge); border-color: var(--rouge); color: #f4f1ea; }
+.btn--p:hover { background: var(--rouge-hover); border-color: var(--rouge-hover); color: #f4f1ea; }
+.btn--sm { min-height: 40px; padding: 0 1rem; font-size: .8125rem; }
+.actions { display: flex; flex-wrap: wrap; gap: .75rem; }
+
+/* Pastille « à compléter » commune aux trois designs */
+.todo { display: inline-flex; align-items: center; gap: .4rem; border: 1px dashed var(--fg2); color: var(--fg2); padding: .2rem .55rem; font: 500 .75rem/1.3 var(--mono); text-transform: uppercase; letter-spacing: .04em; }
+.ph { display: grid; place-items: center; text-align: center; border: 1px dashed var(--fg2); color: var(--fg2); background: repeating-linear-gradient(135deg, transparent 0 12px, color-mix(in srgb, var(--fg2) 10%, transparent) 12px 13px); font: 500 .75rem/1.4 var(--mono); text-transform: uppercase; letter-spacing: .04em; padding: 1rem; max-width: 100%; }
+
+.status { display: inline-flex; align-items: center; gap: .6rem; }
+.status i { width: 10px; height: 10px; border-radius: 50%; background: var(--fg2); flex: none; }
+.status.open i { background: #3fbf6a; box-shadow: 0 0 0 0 rgb(63 191 106 / .6); animation: pulse 2s infinite; }
+@keyframes pulse { 70% { box-shadow: 0 0 0 9px rgb(63 191 106 / 0); } 100% { box-shadow: 0 0 0 0 rgb(63 191 106 / 0); } }
+
+.switch { position: fixed; left: 0; right: 0; bottom: 0; z-index: 60; display: grid; grid-template-columns: repeat(3, 1fr); background: #0b0b0b; border-top: 1px solid #2a2a2a; padding-bottom: env(safe-area-inset-bottom, 0px); }
+.switch button { position: relative; min-height: 56px; display: flex; align-items: center; justify-content: center; gap: .55rem; background: none; border: 0; border-left: 1px solid #2a2a2a; color: #a8a29a; font: 500 .8125rem/1.2 var(--mono); text-transform: uppercase; letter-spacing: .04em; cursor: pointer; padding: 0 .5rem; }
+.switch button:first-child { border-left: 0; }
+.switch button b { font: 400 1.5rem/1 var(--display); }
+.switch button[aria-pressed="true"] { color: #f4f1ea; background: #171717; }
+.switch button[aria-pressed="true"]::before { content: ""; position: absolute; left: 0; right: 0; top: -1px; height: 3px; background: var(--rouge); }
+.switch button:focus-visible { outline: 2px solid #f4f1ea; outline-offset: -4px; }
+.design { padding-bottom: calc(56px + env(safe-area-inset-bottom, 0px)); overflow-x: clip; }
+
+/* Commun : listes de détails */
+.details { display: grid; margin: 0; }
+.details div { display: grid; grid-template-columns: 8rem 1fr; gap: 1rem; padding-block: .85rem; border-top: 1px solid var(--line); }
+.details dt { color: var(--fg2); }
+.details dd { margin: 0; min-width: 0; }
+.footer { border-top: 1px solid var(--line); padding-block: 2.5rem; display: grid; gap: 1.5rem; color: var(--fg2); }
+.footer__row { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 1rem; }
+
+/* ================= DESIGN 1 : NUIT DE FORCE ================= */
+.n-nav { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 40; background: rgb(11 11 11 / .92); border-bottom: 1px solid var(--rack); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
+.n-nav__in { display: flex; align-items: center; justify-content: space-between; gap: 1rem; min-height: 64px; }
+.brand { text-decoration: none; display: grid; line-height: 1.1; }
+.brand b { font: 400 1.375rem/1 var(--display); text-transform: uppercase; }
+.brand span { color: var(--fg2); font-size: .6875rem; }
+.gauge { display: flex; align-items: center; gap: .6rem; }
+.gauge__bar { position: relative; width: clamp(104px, 20vw, 190px); height: 26px; }
+.gauge__bar::before { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 2px; margin-top: -1px; background: var(--poussiere); }
+.gauge__side { position: absolute; top: 0; bottom: 0; display: flex; align-items: center; gap: 2px; }
+.gauge__side.l { right: 74%; flex-direction: row-reverse; }
+.gauge__side.r { left: 74%; }
+.gauge__side::before { content: ""; width: 3px; height: 10px; background: var(--poussiere); }
+.gauge__side i { width: 5px; height: 26px; background: var(--rouge); transform: scaleY(0); transition: transform .3s cubic-bezier(.2,.8,.2,1.2); }
+.gauge__side i.on { transform: scaleY(1); }
+.gauge__kg { font: 400 1.4rem/1 var(--display); font-variant-numeric: tabular-nums; min-width: 4.2ch; text-align: right; }
+.gauge__kg sup { color: var(--rouge); font-size: .55em; vertical-align: top; }
+.n-nav .btn { display: none; }
+.n-hero { position: relative; min-height: clamp(560px, 86svh, 860px); display: grid; align-items: end; overflow: hidden; border-bottom: 1px solid var(--rack); }
+#bar { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.n-hero__fallback { position: absolute; top: 38%; left: 0; right: 0; text-align: center; color: var(--fg2); }
+.n-hero__top { position: absolute; top: clamp(1rem, 3vh, 2rem); left: 0; right: 0; display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; }
+.n-hero__in { position: relative; display: grid; gap: 1.4rem; padding-block: 2rem clamp(2rem, 6vh, 4rem); }
+.n-hero h1 { font-size: clamp(3.25rem, 9vw, 7.5rem); line-height: .9; }
+.n-hero .lead { color: var(--fg2); max-width: 48ch; }
+.n-sec { padding-block: clamp(4.5rem, 12vh, 8rem); border-bottom: 1px solid var(--rack); display: grid; gap: 2.5rem; }
+.n-sec__head { display: grid; gap: 1rem; max-width: 60ch; }
+.n-sec__head h2 { font-size: clamp(2.5rem, 6vw, 4.75rem); }
+.n-sec__head p { color: var(--fg2); }
+.flips { display: grid; gap: 1rem; }
+.flip { perspective: 1000px; background: none; border: 0; padding: 0; text-align: left; cursor: pointer; display: grid; }
+.flip__in { position: relative; display: grid; transform-style: preserve-3d; transition: transform .6s cubic-bezier(.3,.7,.2,1); }
+.flip[aria-pressed="true"] .flip__in { transform: rotateY(180deg); }
+.flip__face { grid-area: 1 / 1; backface-visibility: hidden; -webkit-backface-visibility: hidden; border: 1px solid var(--rack); padding: 1.25rem; display: grid; align-content: space-between; gap: 1rem; background: var(--plateau); min-height: 300px; }
+.flip__face .ph { aspect-ratio: 16 / 8; }
+.flip__face h3 { font-size: 2.25rem; }
+.flip__back { transform: rotateY(180deg); background: var(--craie); color: var(--fonte); border-color: var(--craie); align-content: start; }
+.flip__back ol { margin: 0; padding-left: 1.1rem; display: grid; gap: .4rem; }
+.flip__back b { font: 500 .8125rem var(--mono); letter-spacing: .04em; }
+.flip__hint { color: var(--fg2); display: flex; justify-content: space-between; gap: 1rem; }
+.board { display: grid; border: 1px solid var(--rack); background: #0f0f0f; }
+.board__row { display: grid; grid-template-columns: 6.5rem 1fr; gap: .5rem 1rem; padding: .9rem 1rem; border-top: 1px solid var(--rack); align-items: center; }
+.board__row:first-child { border-top: 0; }
+.board__row.today { background: var(--plateau); box-shadow: inset 3px 0 0 var(--rouge); }
+.board__day { font: 400 1.35rem/1 var(--display); text-transform: uppercase; }
+.board__slots { display: flex; flex-wrap: wrap; gap: .5rem 1.5rem; }
+.board__slot { font: 500 clamp(.875rem, 1.6vw, 1.05rem)/1.3 var(--mono); text-transform: uppercase; letter-spacing: .06em; font-variant-numeric: tabular-nums; }
+.board__slot small { color: var(--fg2); font-size: .8em; margin-left: .5rem; }
+.board__closed { color: #5c5852; }
+.prices { display: grid; gap: 1rem; }
+.price { border: 1px solid var(--rack); background: var(--plateau); padding: 1.5rem; display: grid; gap: 1rem; align-content: start; }
+.price--hi { border-color: var(--rouge); }
+.price h3 { font-size: 1.75rem; }
+.price .amount { font: 400 3rem/1 var(--display); color: var(--fg2); }
+.people { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 1rem; }
+.person { display: grid; gap: .6rem; }
+.person .ph { aspect-ratio: 1; }
+.person b { font: 400 1.25rem/1 var(--display); text-transform: uppercase; }
+.assets { list-style: none; margin: 0; padding: 0; }
+.assets li { display: grid; grid-template-columns: 3.5rem 1fr; gap: .25rem 1rem; padding-block: 1.25rem; border-top: 1px solid var(--rack); }
+.assets .num { grid-row: span 2; font: 400 2.5rem/1 var(--display); color: transparent; -webkit-text-stroke: 1.5px var(--rouge); }
+.assets h3 { font-size: 1.6rem; }
+.assets p { color: var(--fg2); }
+.n-two { display: grid; gap: 2.5rem; }
+
+/* ================= DESIGN 2 : CRAIE ================= */
+.c-nav { border-bottom: 1px solid var(--line); }
+.c-nav__in { display: flex; align-items: center; justify-content: space-between; gap: 1rem; min-height: 72px; }
+.c-nav ul { display: none; list-style: none; margin: 0; padding: 0; gap: 1.75rem; }
+.c-nav ul a { text-decoration: none; }
+.c-nav ul a:hover { text-decoration: underline; text-underline-offset: 6px; }
+.c-hero { display: grid; gap: 2rem; padding-block: clamp(2.5rem, 8vh, 5rem); }
+.c-hero h1 { font-size: clamp(3rem, 8vw, 6.5rem); line-height: .9; }
+.c-hero h1 em { font-style: normal; color: var(--rouge); }
+.c-hero .lead { color: var(--fg2); max-width: 44ch; font-size: 1.15rem; }
+.c-hero .ph { aspect-ratio: 4 / 5; min-height: 280px; }
+.c-hero__meta { display: grid; gap: .75rem; padding-top: 1.25rem; border-top: 1px solid var(--line); }
+.c-sec { padding-block: clamp(5rem, 16vh, 10rem); display: grid; gap: 2.5rem; }
+.c-sec + .c-sec { border-top: 1px solid var(--line); }
+.c-label { display: flex; gap: 1rem; align-items: baseline; color: var(--fg2); }
+.c-label::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+.c-sec h2 { font-size: clamp(2.5rem, 6vw, 4.5rem); }
+.c-intro { color: var(--fg2); max-width: 52ch; }
+.c-lifts { display: grid; gap: 2rem; }
+.c-lift { display: grid; gap: .75rem; padding-top: 1.25rem; border-top: 2px solid var(--fg); }
+.c-lift h3 { font-size: 2rem; }
+.c-lift p { color: var(--fg2); }
+.c-lift .mono { color: var(--rouge); }
+.tl { display: grid; gap: .35rem; }
+.tl__axis, .tl__row { display: grid; grid-template-columns: 5.5rem 1fr; gap: .75rem; align-items: center; }
+.tl__ticks { position: relative; height: 1.2rem; }
+.tl__ticks span { position: absolute; transform: translateX(-50%); font: 500 .6875rem/1 var(--mono); color: var(--fg2); }
+.tl__track { position: relative; height: 44px; background: var(--panel); background-image: repeating-linear-gradient(90deg, transparent 0 calc(100% / 14 - 1px), color-mix(in srgb, var(--fg2) 25%, transparent) calc(100% / 14 - 1px) calc(100% / 14)); }
+.tl__bar { position: absolute; top: 5px; bottom: 5px; background: var(--fonte); color: var(--craie); display: flex; align-items: center; padding-inline: .6rem; overflow: hidden; white-space: nowrap; font: 500 .75rem/1 var(--mono); text-transform: uppercase; letter-spacing: .04em; }
+.tl__bar.pm { background: var(--rouge); }
+.tl__row.today .tl__day { color: var(--rouge); }
+.tl__day { font: 400 1.15rem/1 var(--display); text-transform: uppercase; }
+.tl__now { position: absolute; top: -4px; bottom: -4px; width: 2px; background: var(--rouge); }
+.tl__legend { display: flex; flex-wrap: wrap; gap: .5rem 1.5rem; color: var(--fg2); margin-top: 1rem; }
+.tl__legend span { display: inline-flex; align-items: center; gap: .5rem; }
+.tl__legend i { width: 14px; height: 14px; background: var(--fonte); }
+.tl__legend i.pm { background: var(--rouge); }
+.c-rows { display: grid; }
+.c-rows > div { display: grid; grid-template-columns: 1fr auto; gap: 1rem; align-items: center; padding-block: 1.1rem; border-top: 1px solid var(--line); }
+.c-rows > div:last-child { border-bottom: 1px solid var(--line); }
+.c-rows h3 { font-size: 1.5rem; }
+.c-rows p { color: var(--fg2); font-size: .9375rem; }
+.c-people { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 1.25rem; }
+.c-people .ph { aspect-ratio: 3 / 4; }
+.c-people b { display: block; font: 400 1.2rem/1 var(--display); text-transform: uppercase; margin-top: .6rem; }
+.c-two { display: grid; gap: 2.5rem; }
+.c-quote { font: 400 clamp(1.75rem, 3.5vw, 2.75rem)/1.1 var(--display); text-transform: uppercase; max-width: 22ch; }
+
+/* ================= DESIGN 3 : FEUILLE DE MATCH ================= */
+.f-nav { display: flex; align-items: center; justify-content: space-between; gap: 1rem; min-height: 64px; border-bottom: 1px solid var(--rack); }
+.bento { display: grid; gap: 1px; background: var(--rack); border: 1px solid var(--rack); }
+.cell { background: var(--fonte); padding: clamp(1.1rem, 2.5vw, 1.75rem); display: grid; gap: .9rem; align-content: start; min-width: 0; }
+.cell--hi { background: var(--plateau); }
+.cell--red { background: var(--rouge); color: #f4f1ea; }
+.cell--red .muted { color: #f4f1ea; }
+.cell__k { color: var(--fg2); display: flex; justify-content: space-between; gap: 1rem; }
+.cell h1 { font-size: clamp(2.75rem, 7vw, 5.5rem); line-height: .9; }
+.cell h2 { font-size: clamp(2rem, 4vw, 3rem); }
+.cell h3 { font-size: 1.6rem; }
+.cell .big { font: 400 clamp(2rem, 4vw, 3rem)/1 var(--display); text-transform: uppercase; }
+.cell p.t { color: var(--fg2); max-width: 46ch; }
+.f-sec { padding-block: clamp(3rem, 8vh, 5rem) 0; display: grid; gap: 1rem; }
+.f-sec__k { display: flex; justify-content: space-between; gap: 1rem; color: var(--fg2); }
+.f-table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+.f-table th, .f-table td { text-align: left; padding: .8rem .9rem; border-top: 1px solid var(--rack); }
+.f-table th { font: 500 .75rem/1.2 var(--mono); text-transform: uppercase; letter-spacing: .04em; color: var(--fg2); border-top: 0; }
+.f-table td:first-child { font: 400 1.2rem/1 var(--display); text-transform: uppercase; }
+.f-table td { font: 500 .9375rem/1.3 var(--mono); }
+.f-table td small { display: block; color: var(--fg2); font-size: .75rem; margin-top: .2rem; text-transform: uppercase; }
+.f-table tr.today td { background: var(--plateau); }
+.f-table tr.today td:first-child { box-shadow: inset 3px 0 0 var(--rouge); }
+.f-table .no { color: #5c5852; }
+.tablewrap { overflow-x: auto; }
+.lights { display: flex; gap: .6rem; }
+.light { width: 26px; height: 26px; border-radius: 50%; border: 2px solid var(--rack); background: var(--plateau); transition: background-color .25s, border-color .25s; }
+.judge:hover .light, .judge:focus-within .light, .judge.on .light { background: var(--craie); border-color: var(--craie); }
+.judge .light:nth-child(2) { transition-delay: .15s; }
+.judge .light:nth-child(3) { transition-delay: .3s; }
+.calc__kg { font: 400 clamp(2.75rem, 6vw, 4rem)/.9 var(--display); font-variant-numeric: tabular-nums; }
+.calc__kg sup { color: var(--rouge); font-size: .45em; vertical-align: top; }
+.calc__ctrl { display: flex; gap: .5rem; align-items: center; }
+.calc__ctrl input { flex: 1; min-width: 0; accent-color: var(--rouge); height: 44px; }
+.calc__ctrl .btn { width: 44px; padding: 0; font-size: 1.25rem; }
+.rig { height: 120px; position: relative; }
+.rig::before { content: ""; position: absolute; left: 2%; right: 2%; top: 50%; height: 5px; margin-top: -2.5px; background: linear-gradient(#cfcac1, #8f8a82); }
+.rig__side { position: absolute; top: 0; bottom: 0; display: flex; align-items: center; gap: 2px; }
+.rig__side.l { right: 64%; flex-direction: row-reverse; }
+.rig__side.r { left: 64%; }
+.rig__collar { width: 7px; height: 26px; background: #b9b4ab; }
+.plate { height: var(--h); width: var(--w); background: var(--c); border: 1px solid var(--b, transparent); }
+.calc__list { color: var(--fg2); }
+
+@media (min-width: 640px) {
+  .n-nav .btn { display: inline-flex; }
+}
+@media (min-width: 768px) {
+  .details div { grid-template-columns: 10rem 1fr; }
+  .flips, .prices { grid-template-columns: repeat(3, 1fr); }
+  .c-lifts { grid-template-columns: repeat(3, 1fr); }
+  .c-nav ul { display: flex; }
+  .bento { grid-template-columns: repeat(4, 1fr); }
+  .span2 { grid-column: span 2; }
+  .span3 { grid-column: span 3; }
+  .span4 { grid-column: 1 / -1; }
+  .row2 { grid-row: span 2; }
+}
+@media (min-width: 1024px) {
+  .n-two, .c-two { grid-template-columns: 1fr 1fr; align-items: start; }
+  .c-hero { grid-template-columns: 1.15fr .85fr; align-items: end; }
+}
+@media (max-width: 520px) {
+  .switch button span { display: none; }
+  .switch button::after { content: attr(data-short); }
+  .tl__axis, .tl__row { grid-template-columns: 3.2rem 1fr; gap: .5rem; }
+  .tl__day { font-size: .95rem; }
+  .tl__bar { font-size: .625rem; padding-inline: .35rem; }
+  .tl__who { display: none; }
+  .bento.two { grid-template-columns: 1fr 1fr; }
+  .bento.two .cell h3 { font-size: 1.2rem; }
+  .bento.two .big { font-size: 1.75rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .flip__in, .light, .btn, .gauge__side i { transition: none; }
+  .status.open i { animation: none; }
+}
+.switch { display: none !important; }
+</style>
+
+<!-- ======================= DESIGN 1 : NUIT DE FORCE ======================= -->
+<div class="design" id="d1">
+  <header class="n-nav">
+    <div class="wrap n-nav__in g">
+      <a class="brand" href="#d1-top"><b>FA Caen</b><span class="mono">Force Athlétique Caennaise</span></a>
+      <div class="gauge" aria-label="Progression dans la page">
+        <div class="gauge__bar" aria-hidden="true">
+          <div class="gauge__side l"><i></i><i></i><i></i><i></i><i></i></div>
+          <div class="gauge__side r"><i></i><i></i><i></i><i></i><i></i></div>
+        </div>
+        <p class="gauge__kg"><span id="g-kg">20</span><sup>kg</sup></p>
+      </div>
+      <a class="btn btn--p btn--sm" href="#d1-salle">Venir essayer</a>
+    </div>
+  </header>
+  <main id="d1-top">
+    <section class="n-hero" aria-labelledby="d1-title">
+      <canvas id="bar" aria-hidden="true"></canvas>
+      <p class="n-hero__fallback mono" id="bar-fallback" hidden>La 3D n’est pas disponible sur cet appareil</p>
+      <div class="wrap n-hero__top g">
+        <p class="mono status" data-status><i></i><span>Horaires</span></p>
+        <button class="mono muted" type="button" id="bar-reload" style="background:none;border:0;cursor:pointer;text-decoration:underline;text-underline-offset:5px">Recharger la barre</button>
+      </div>
+      <div class="wrap n-hero__in g">
+        <h1 id="d1-title">Plus lourd<br>chaque <span class="outline">semaine</span></h1>
+        <p class="lead">Squat, développé couché, soulevé de terre. Un club associatif affilié FFForce, ouvert 7 jours sur 7, du premier entraînement à la compétition.</p>
+        <div class="actions"><a class="btn btn--p" href="#d1-salle">Venir essayer</a><a class="btn" href="#d1-horaires">Les horaires</a></div>
+      </div>
+    </section>
+
+    <section class="wrap n-sec g" id="d1-discipline" data-step="1" aria-labelledby="d1-disc">
+      <div class="n-sec__head">
+        <p class="mono muted">La discipline</p>
+        <h2 id="d1-disc">Trois mouvements, une barre</h2>
+        <p>On additionne la meilleure barre de chaque mouvement pour faire un total. Retourne une carte pour voir ce que regardent les arbitres.</p>
+      </div>
+      <div class="flips">
+        <button class="flip" type="button" aria-pressed="false"><span class="flip__in">
+          <span class="flip__face"><span class="ph">Photo de squat à venir</span><h3>Squat</h3><span class="flip__hint mono"><span>Barre sur le dos</span><span>Retourner</span></span></span>
+          <span class="flip__face flip__back"><h3>Squat</h3><ol><li>Attendre la commande <b>SQUAT</b></li><li>Hanches sous le haut des genoux</li><li>Remonter debout, genoux verrouillés</li><li>Attendre la commande <b>RACK</b></li></ol></span>
+        </span></button>
+        <button class="flip" type="button" aria-pressed="false"><span class="flip__in">
+          <span class="flip__face"><span class="ph">Photo de développé couché à venir</span><h3>Développé couché</h3><span class="flip__hint mono"><span>Sur le banc</span><span>Retourner</span></span></span>
+          <span class="flip__face flip__back"><h3>Couché</h3><ol><li>Attendre la commande <b>START</b></li><li>Barre sur la poitrine, temps d’arrêt</li><li>Pousser à la commande <b>PRESS</b></li><li>Bras tendus, attendre <b>RACK</b></li></ol></span>
+        </span></button>
+        <button class="flip" type="button" aria-pressed="false"><span class="flip__in">
+          <span class="flip__face"><span class="ph">Photo de soulevé de terre à venir</span><h3>Soulevé de terre</h3><span class="flip__hint mono"><span>Depuis le sol</span><span>Retourner</span></span></span>
+          <span class="flip__face flip__back"><h3>Terre</h3><ol><li>Tirer depuis le sol, sans élan</li><li>Debout, genoux verrouillés</li><li>Épaules en arrière</li><li>Reposer à la commande <b>DOWN</b></li></ol></span>
+        </span></button>
+      </div>
+    </section>
+
+    <section class="wrap n-sec g" id="d1-horaires" data-step="2" aria-labelledby="d1-hor">
+      <div class="n-sec__head">
+        <p class="mono muted">Horaires</p>
+        <h2 id="d1-hor">Ouvert 7 jours sur 7</h2>
+        <p>Tous les créneaux sont encadrés. Viens à l’heure que tu veux, la séance d’essai se fait sur place.</p>
+      </div>
+      <div class="board" data-hours="board"></div>
+    </section>
+
+    <section class="wrap n-sec g" id="d1-tarifs" data-step="3" aria-labelledby="d1-tar">
+      <div class="n-sec__head">
+        <p class="mono muted">Tarifs</p>
+        <h2 id="d1-tar">Adhésion</h2>
+        <p>Licence FFForce et cotisation annuelle. Les montants arrivent bientôt.</p>
+      </div>
+      <div class="prices">
+        <div class="price"><p class="mono muted">Séance d’essai</p><p class="amount">… €</p><span class="todo">À compléter</span><a class="btn" href="#d1-salle">Venir essayer</a></div>
+        <div class="price price--hi"><p class="mono" style="color:var(--rouge)">Adulte</p><p class="amount">… €<small class="mono"> / an</small></p><span class="todo">À compléter</span><a class="btn btn--p" href="#d1-salle">Adhérer</a></div>
+        <div class="price"><p class="mono muted">Tarif réduit</p><p class="amount">… €<small class="mono"> / an</small></p><span class="todo">À compléter</span><a class="btn" href="#d1-salle">Adhérer</a></div>
+      </div>
+    </section>
+
+    <section class="wrap n-sec g" id="d1-club" data-step="4" aria-labelledby="d1-clu">
+      <div class="n-two">
+        <div class="n-sec__head">
+          <p class="mono muted">Le club</p>
+          <h2 id="d1-clu">Un club, pas une salle de sport</h2>
+          <p>Une association où l’on s’entraîne ensemble, où l’on apprend la technique et où l’on se soutient les jours de compétition.</p>
+        </div>
+        <ol class="assets">
+          <li><span class="num" aria-hidden="true">01</span><h3>Affilié FFForce</h3><p>Licence fédérale pour participer aux compétitions officielles.</p></li>
+          <li><span class="num" aria-hidden="true">02</span><h3>Encadré tous les jours</h3><p>Un encadrant le matin, un autre le soir.</p></li>
+          <li><span class="num" aria-hidden="true">03</span><h3>Sport propre</h3><p>Charte d’engagement contre le dopage. <span class="todo">À confirmer</span></p></li>
+        </ol>
+      </div>
+      <div>
+        <p class="mono muted" style="margin-bottom:1rem">Le bureau</p>
+        <div class="people">
+          <div class="person"><div class="ph">Photo</div><b>Président·e</b><span class="todo">Nom à compléter</span></div>
+          <div class="person"><div class="ph">Photo</div><b>Trésorier·e</b><span class="todo">Nom à compléter</span></div>
+          <div class="person"><div class="ph">Photo</div><b>Secrétaire</b><span class="todo">Nom à compléter</span></div>
+          <div class="person"><div class="ph">Photo</div><b>Encadrant</b><span class="mono muted">Encadrant, matin</span></div>
+          <div class="person"><div class="ph">Photo</div><b>Encadrant</b><span class="mono muted">Encadrant, soir</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="wrap n-sec g" id="d1-salle" data-step="5" aria-labelledby="d1-sal">
+      <div class="n-two">
+        <div class="n-sec__head">
+          <p class="mono muted">La salle</p>
+          <h2 id="d1-sal">Venir essayer</h2>
+          <p>Passe aux heures d’ouverture, ou écris-nous sur Instagram avant.</p>
+          <div class="actions" style="margin-top:.5rem"><a class="btn btn--p" href="https://www.instagram.com/force_athletique_caennaise/" target="_blank" rel="noopener">Écrire sur Instagram</a><a class="btn" href="https://www.google.com/maps/search/?api=1&amp;query=49.196457,-0.3415612" target="_blank" rel="noopener">Itinéraire</a></div>
+        </div>
+        <dl class="details">
+          <div><dt class="mono">Adresse</dt><dd>44 Clos du Poteau Rouge, 14000 Caen <span class="todo">À confirmer</span></dd></div>
+          <div><dt class="mono">Aujourd’hui</dt><dd data-today></dd></div>
+          <div><dt class="mono">Accès</dt><dd><span class="todo">À compléter</span></dd></div>
+          <div><dt class="mono">Matériel</dt><dd><span class="todo">À compléter</span></dd></div>
+          <div><dt class="mono">À apporter</dt><dd><span class="todo">À compléter</span></dd></div>
+        </dl>
+      </div>
+    </section>
+  </main>
+  <footer class="wrap footer g">
+    <div class="footer__row"><p class="mono">Force Athlétique Caennaise · association loi 1901</p><a class="mono" href="https://www.instagram.com/force_athletique_caennaise/" target="_blank" rel="noopener">@force_athletique_caennaise</a></div>
+    <p class="mono">Mentions légales&nbsp;: <span class="todo">Responsable de la publication à compléter</span></p>
+  </footer>
+</div>
+
+<!-- ======================= DESIGN 2 : CRAIE ======================= -->
+<div class="design" id="d2" hidden>
+  <header class="c-nav">
+    <div class="wrap c-nav__in g">
+      <a class="brand" href="#d2-top"><b>Force Athlétique Caennaise</b></a>
+      <nav aria-label="Navigation principale"><ul class="mono"><li><a href="#d2-disc">Discipline</a></li><li><a href="#d2-hor">Horaires</a></li><li><a href="#d2-tar">Tarifs</a></li><li><a href="#d2-club">Le club</a></li></ul></nav>
+      <a class="btn btn--p btn--sm" href="#d2-venir">Venir essayer</a>
+    </div>
+  </header>
+  <main id="d2-top">
+    <section class="wrap c-hero g" aria-labelledby="d2-title">
+      <div style="display:grid;gap:1.5rem">
+        <p class="mono muted">Club de force athlétique · Caen</p>
+        <h1 id="d2-title">Squat, couché, terre. <em>Ensemble.</em></h1>
+        <p class="lead">Un club associatif affilié FFForce, ouvert 7 jours sur 7, où débutants et compétiteurs partagent la même salle.</p>
+        <div class="actions"><a class="btn btn--p" href="#d2-venir">Venir essayer</a><a class="btn" href="#d2-hor">Voir les horaires</a></div>
+        <div class="c-hero__meta">
+          <p class="mono status" data-status><i></i><span>Horaires</span></p>
+          <p class="mono muted">44 Clos du Poteau Rouge, Caen</p>
+        </div>
+      </div>
+      <div class="ph">Photo d’un athlète sous la barre<br>à compléter</div>
+    </section>
+
+    <section class="wrap c-sec g" id="d2-disc" aria-labelledby="d2-disc-t">
+      <p class="mono c-label">La discipline</p>
+      <h2 id="d2-disc-t">Trois mouvements,<br>un total</h2>
+      <div class="c-lifts">
+        <article class="c-lift"><p class="mono">Barre sur le dos</p><h3>Squat</h3><p>On descend hanches sous les genoux, puis on remonte debout.</p></article>
+        <article class="c-lift"><p class="mono">Sur le banc</p><h3>Développé couché</h3><p>La barre touche la poitrine, marque un temps d’arrêt, puis repart bras tendus.</p></article>
+        <article class="c-lift"><p class="mono">Depuis le sol</p><h3>Soulevé de terre</h3><p>Jusqu’à la position debout, épaules en arrière. Le plus lourd des trois.</p></article>
+      </div>
+    </section>
+
+    <section class="wrap c-sec g" id="d2-hor" aria-labelledby="d2-hor-t">
+      <p class="mono c-label">Horaires</p>
+      <div style="display:grid;gap:1rem">
+        <h2 id="d2-hor-t">La semaine à la salle</h2>
+        <p class="c-intro">Tous les créneaux sont encadrés. Le trait rouge vertical montre l’heure actuelle.</p>
+      </div>
+      <div>
+        <div class="tl" data-hours="timeline"></div>
+        <div class="tl__legend mono"><span><i></i>Matin encadré</span><span><i class="pm"></i>Soir encadré</span></div>
+      </div>
+    </section>
+
+    <section class="wrap c-sec g" id="d2-tar" aria-labelledby="d2-tar-t">
+      <p class="mono c-label">Tarifs</p>
+      <div class="c-two">
+        <div style="display:grid;gap:1rem">
+          <h2 id="d2-tar-t">Adhésion</h2>
+          <p class="c-intro">Licence FFForce et cotisation annuelle, valables toute la saison.</p>
+        </div>
+        <div class="c-rows">
+          <div><div><h3>Séance d’essai</h3><p>Sur place, aux heures d’ouverture</p></div><span class="todo">À compléter</span></div>
+          <div><div><h3>Adulte</h3><p>Cotisation et licence, à l’année</p></div><span class="todo">À compléter</span></div>
+          <div><div><h3>Tarif réduit</h3><p>Jeunes, étudiants, demandeurs d’emploi</p></div><span class="todo">À compléter</span></div>
+          <div><div><h3>Paiement</h3><p>Moyens acceptés</p></div><span class="todo">À compléter</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="wrap c-sec g" id="d2-club" aria-labelledby="d2-club-t">
+      <p class="mono c-label">Le club</p>
+      <div class="c-two">
+        <p class="c-quote" id="d2-club-t">Un club, pas une salle de sport.</p>
+        <p class="c-intro">On s’entraîne ensemble, on apprend la technique et on se soutient les jours de compétition. Un encadrant le matin, un autre le soir.</p>
+      </div>
+      <div class="c-people">
+        <div><div class="ph">Photo</div><b>Président·e</b><span class="todo">À compléter</span></div>
+        <div><div class="ph">Photo</div><b>Trésorier·e</b><span class="todo">À compléter</span></div>
+        <div><div class="ph">Photo</div><b>Secrétaire</b><span class="todo">À compléter</span></div>
+        <div><div class="ph">Photo</div><b>Encadrant</b><span class="mono muted">Encadrant</span></div>
+        <div><div class="ph">Photo</div><b>Encadrant</b><span class="mono muted">Encadrant</span></div>
+      </div>
+    </section>
+
+    <section class="wrap c-sec g" id="d2-venir" aria-labelledby="d2-venir-t">
+      <p class="mono c-label">Venir essayer</p>
+      <div class="c-two">
+        <div style="display:grid;gap:1.25rem">
+          <h2 id="d2-venir-t">Passe nous voir</h2>
+          <p class="c-intro">Viens pendant un créneau, en tenue de sport. Une question avant&nbsp;? Écris-nous sur Instagram.</p>
+          <div class="actions"><a class="btn btn--p" href="https://www.instagram.com/force_athletique_caennaise/" target="_blank" rel="noopener">Écrire sur Instagram</a><a class="btn" href="https://www.google.com/maps/search/?api=1&amp;query=49.196457,-0.3415612" target="_blank" rel="noopener">Itinéraire</a></div>
+        </div>
+        <dl class="details">
+          <div><dt class="mono">Adresse</dt><dd>44 Clos du Poteau Rouge, 14000 Caen</dd></div>
+          <div><dt class="mono">Aujourd’hui</dt><dd data-today></dd></div>
+          <div><dt class="mono">Accès</dt><dd><span class="todo">À compléter</span></dd></div>
+          <div><dt class="mono">La salle</dt><dd><span class="todo">Surface et matériel à compléter</span></dd></div>
+        </dl>
+      </div>
+    </section>
+  </main>
+  <footer class="wrap footer g">
+    <div class="footer__row"><p class="mono">Force Athlétique Caennaise · association loi 1901</p><a class="mono" href="https://www.instagram.com/force_athletique_caennaise/" target="_blank" rel="noopener">@force_athletique_caennaise</a></div>
+    <p class="mono">Mentions légales&nbsp;: <span class="todo">À compléter</span></p>
+  </footer>
+</div>
+
+<!-- ======================= DESIGN 3 : FEUILLE DE MATCH ======================= -->
+<div class="design" id="d3" hidden>
+  <header class="wrap f-nav g">
+    <a class="brand" href="#d3-top"><b>FA Caen</b><span class="mono">Force Athlétique Caennaise</span></a>
+    <a class="btn btn--p btn--sm" href="#d3-venir">Venir essayer</a>
+  </header>
+  <main class="wrap g" id="d3-top" style="padding-top:1.5rem">
+    <div class="bento">
+      <div class="cell span2 row2">
+        <p class="cell__k mono"><span>Fiche du club</span><span>Caen</span></p>
+        <h1>Force Athlétique Caennaise</h1>
+        <p class="t">Squat, développé couché, soulevé de terre. Club associatif affilié FFForce, ouvert 7 jours sur 7.</p>
+        <div class="actions"><a class="btn btn--p" href="#d3-venir">Venir essayer</a><a class="btn" href="#d3-hor">Horaires</a></div>
+      </div>
+      <div class="cell cell--hi span2">
+        <p class="cell__k mono"><span>En ce moment</span><span data-clock></span></p>
+        <p class="big status" data-status><i></i><span>Horaires</span></p>
+        <p class="mono muted" data-next></p>
+      </div>
+      <div class="cell">
+        <p class="cell__k mono"><span>Adresse</span></p>
+        <p>44 Clos du Poteau Rouge<br>14000 Caen</p>
+        <a class="mono" href="https://www.google.com/maps/search/?api=1&amp;query=49.196457,-0.3415612" target="_blank" rel="noopener">Itinéraire</a>
+      </div>
+      <div class="cell cell--red">
+        <p class="cell__k mono"><span>Contact</span></p>
+        <p>Une question&nbsp;? On répond sur Instagram.</p>
+        <a class="mono" href="https://www.instagram.com/force_athletique_caennaise/" target="_blank" rel="noopener">@force_athletique_caennaise</a>
+      </div>
+    </div>
+
+    <section class="f-sec" id="d3-hor" aria-labelledby="d3-hor-t">
+      <p class="f-sec__k mono"><span id="d3-hor-t">Horaires de la semaine</span><span>Tous encadrés</span></p>
+      <div class="bento"><div class="cell span4" style="padding:0"><div class="tablewrap" data-hours="table"></div></div></div>
+    </section>
+
+    <section class="f-sec" aria-labelledby="d3-disc-t">
+      <p class="f-sec__k mono"><span id="d3-disc-t">La discipline</span><span>Touche une carte</span></p>
+      <div class="bento">
+        <div class="cell judge" tabindex="0"><div class="lights" aria-hidden="true"><i class="light"></i><i class="light"></i><i class="light"></i></div><h3>Squat</h3><p class="t">Hanches sous le haut des genoux, puis debout.</p></div>
+        <div class="cell judge" tabindex="0"><div class="lights" aria-hidden="true"><i class="light"></i><i class="light"></i><i class="light"></i></div><h3>Développé couché</h3><p class="t">Barre sur la poitrine, temps d’arrêt, bras tendus.</p></div>
+        <div class="cell judge" tabindex="0"><div class="lights" aria-hidden="true"><i class="light"></i><i class="light"></i><i class="light"></i></div><h3>Soulevé de terre</h3><p class="t">Du sol à debout, épaules en arrière.</p></div>
+        <div class="cell cell--hi"><p class="cell__k mono"><span>Le total</span></p><p class="t">En compétition, on additionne la meilleure barre de chaque mouvement. Deux lumières blanches sur trois et l’essai est validé.</p></div>
+      </div>
+    </section>
+
+    <section class="f-sec" aria-labelledby="d3-calc-t">
+      <p class="f-sec__k mono"><span id="d3-calc-t">Calculateur de barre</span><span>Barre 20 kg, colliers 2,5 kg</span></p>
+      <div class="bento">
+        <div class="cell span2">
+          <p class="calc__kg"><span id="calc-kg">140</span><sup>kg</sup></p>
+          <div class="calc__ctrl">
+            <button class="btn" type="button" id="calc-minus" aria-label="Retirer 2,5 kg">−</button>
+            <input type="range" id="calc-range" min="25" max="300" step="2.5" value="140" aria-label="Charge totale en kilos">
+            <button class="btn" type="button" id="calc-plus" aria-label="Ajouter 2,5 kg">+</button>
+          </div>
+        </div>
+        <div class="cell span2">
+          <div class="rig" aria-hidden="true"><div class="rig__side l" id="rig-l"></div><div class="rig__side r" id="rig-r"></div></div>
+          <p class="calc__list mono" id="calc-list" aria-live="polite"></p>
+        </div>
+      </div>
+    </section>
+
+    <section class="f-sec" id="d3-tar" aria-labelledby="d3-tar-t">
+      <p class="f-sec__k mono"><span id="d3-tar-t">Tarifs</span><span>Saison en cours</span></p>
+      <div class="bento two">
+        <div class="cell"><p class="cell__k mono"><span>Essai</span></p><p class="big">… €</p><span class="todo">À compléter</span></div>
+        <div class="cell"><p class="cell__k mono"><span>Adulte</span></p><p class="big">… €</p><span class="todo">À compléter</span></div>
+        <div class="cell"><p class="cell__k mono"><span>Réduit</span></p><p class="big">… €</p><span class="todo">À compléter</span></div>
+        <div class="cell cell--hi"><p class="cell__k mono"><span>Licence FFForce</span></p><p class="t">Incluse ou en plus&nbsp;?</p><span class="todo">À compléter</span></div>
+      </div>
+    </section>
+
+    <section class="f-sec" aria-labelledby="d3-club-t">
+      <p class="f-sec__k mono"><span id="d3-club-t">Le bureau et l’encadrement</span><span>Association loi 1901</span></p>
+      <div class="bento two">
+        <div class="cell"><div class="ph" style="aspect-ratio:1">Photo</div><h3>Président·e</h3><span class="todo">À compléter</span></div>
+        <div class="cell"><div class="ph" style="aspect-ratio:1">Photo</div><h3>Trésorier·e</h3><span class="todo">À compléter</span></div>
+        <div class="cell"><div class="ph" style="aspect-ratio:1">Photo</div><h3>Encadrant</h3><p class="mono muted">Encadrant, matin</p></div>
+        <div class="cell"><div class="ph" style="aspect-ratio:1">Photo</div><h3>Encadrant</h3><p class="mono muted">Encadrant, soir</p></div>
+      </div>
+    </section>
+
+    <section class="f-sec" id="d3-venir" aria-labelledby="d3-venir-t" style="padding-bottom:3rem">
+      <p class="f-sec__k mono"><span id="d3-venir-t">Venir essayer</span></p>
+      <div class="bento">
+        <div class="cell span2 cell--hi"><h2>Passe pendant un créneau</h2><p class="t">En tenue de sport. On te montre la technique et tu essaies les trois mouvements.</p><div class="actions"><a class="btn btn--p" href="https://www.instagram.com/force_athletique_caennaise/" target="_blank" rel="noopener">Écrire sur Instagram</a></div></div>
+        <div class="cell span2"><dl class="details"><div><dt class="mono">Aujourd’hui</dt><dd data-today></dd></div><div><dt class="mono">Accès</dt><dd><span class="todo">À compléter</span></dd></div><div><dt class="mono">Matériel</dt><dd><span class="todo">À compléter</span></dd></div><div><dt class="mono">Mentions</dt><dd><span class="todo">À compléter</span></dd></div></dl></div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<nav class="switch" aria-label="Choisir un design">
+  <button type="button" data-go="d1" data-short="Nuit" aria-pressed="true"><b>1</b><span>Nuit de force</span></button>
+  <button type="button" data-go="d2" data-short="Craie" aria-pressed="false"><b>2</b><span>Craie</span></button>
+  <button type="button" data-go="d3" data-short="Fiche" aria-pressed="false"><b>3</b><span>Feuille de match</span></button>
+</nav>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(() => {
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+  const ease = t => 1 - Math.pow(1 - t, 3);
+  const fr = n => String(n).replace('.', ',');
+
+  /* ---------- Horaires (tableau blanc de la salle) ---------- */
+  const DAYS = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
+  const AM = { from: 9, to: 13, who: 'Encadré', pm: false };
+  const PM = { from: 16, to: 21, who: 'Encadré', pm: true };
+  const WEEK = [[PM], [AM, PM], [PM], [AM, PM], [PM], [AM], [AM]];
+  const h = n => `${n}h`;
+  const now = new Date();
+  const todayIdx = (now.getDay() + 6) % 7;
+  const hourNow = now.getHours() + now.getMinutes() / 60;
+
+  function status() {
+    const cur = WEEK[todayIdx].find(s => hourNow >= s.from && hourNow < s.to);
+    if (cur) return { open: true, text: `Ouvert jusqu’à ${h(cur.to)}`, next: `Séance encadrée` };
+    for (let k = 0; k < 8; k++) {
+      const d = (todayIdx + k) % 7;
+      const s = WEEK[d].find(x => k > 0 || x.from > hourNow);
+      if (s) {
+        const when = k === 0 ? 'aujourd’hui' : k === 1 ? 'demain' : DAYS[d].toLowerCase();
+        return { open: false, text: 'Fermé', next: `Réouvre ${when} à ${h(s.from)}` };
+      }
+    }
+    return { open: false, text: 'Fermé', next: '' };
+  }
+  const st = status();
+  document.querySelectorAll('[data-status]').forEach(el => {
+    el.classList.toggle('open', st.open);
+    el.querySelector('span').textContent = el.closest('#d3') ? st.text : `${st.text} · ${st.next}`;
+  });
+  document.querySelectorAll('[data-next]').forEach(el => { el.textContent = st.next; });
+  document.querySelectorAll('[data-clock]').forEach(el => { el.textContent = `${DAYS[todayIdx]} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`; });
+  const todayText = WEEK[todayIdx].map(s => `${h(s.from)} à ${h(s.to)}`).join(', puis ');
+  document.querySelectorAll('[data-today]').forEach(el => { el.textContent = `${DAYS[todayIdx]} : ${todayText}`; });
+
+  /* Design 1 : tableau d'affichage à palettes */
+  const board = document.querySelector('[data-hours="board"]');
+  board.innerHTML = WEEK.map((slots, i) => `<div class="board__row${i === todayIdx ? ' today' : ''}"><p class="board__day">${DAYS[i]}</p><p class="board__slots">${
+    slots.map(s => `<span class="board__slot"><span class="flapme">${String(s.from).padStart(2, '0')}H-${s.to}H</span><small>${s.who}</small></span>`).join('')
+  }</p></div>`).join('');
+  const CH = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  function flap() {
+    if (reduce) return;
+    board.querySelectorAll('.flapme').forEach((el, j) => {
+      const target = el.dataset.t || (el.dataset.t = el.textContent);
+      let n = 8 + j * 2;
+      const step = () => {
+        el.textContent = n <= 0 ? target : [...target].map(c => /[0-9A-Z]/.test(c) ? CH[Math.floor(Math.random() * CH.length)] : c).join('');
+        if (n-- > 0) setTimeout(step, 50);
+      };
+      step();
+    });
+  }
+  new IntersectionObserver((es, o) => es.forEach(e => { if (e.isIntersecting) { flap(); o.disconnect(); } }), { threshold: .4 }).observe(board);
+
+  /* Design 2 : frise de la semaine (8h à 22h) */
+  const T0 = 8, T1 = 22, pct = v => ((v - T0) / (T1 - T0) * 100).toFixed(2);
+  const tl = document.querySelector('[data-hours="timeline"]');
+  let ticks = '';
+  for (let t = T0; t <= T1; t += 2) ticks += `<span style="left:${pct(t)}%">${t}h</span>`;
+  tl.innerHTML = `<div class="tl__axis" aria-hidden="true"><span></span><div class="tl__ticks">${ticks}</div></div>` +
+    WEEK.map((slots, i) => `<div class="tl__row${i === todayIdx ? ' today' : ''}"><p class="tl__day">${DAYS[i]}</p><div class="tl__track">${
+      slots.map(s => `<span class="tl__bar${s.pm ? ' pm' : ''}" style="left:${pct(s.from)}%;width:${pct(T0 + s.to - s.from)}%">${h(s.from)}-${h(s.to)}<span class="tl__who"> ${s.who}</span></span>`).join('')
+    }${i === todayIdx && hourNow >= T0 && hourNow <= T1 ? `<span class="tl__now" style="left:${pct(hourNow)}%" title="Maintenant"></span>` : ''}</div></div>`).join('');
+
+  /* Design 3 : tableau */
+  document.querySelector('[data-hours="table"]').innerHTML = `<table class="f-table"><thead><tr><th scope="col">Jour</th><th scope="col">Matin</th><th scope="col">Soir</th></tr></thead><tbody>${
+    WEEK.map((slots, i) => {
+      const am = slots.find(s => !s.pm), pm = slots.find(s => s.pm);
+      const cell = s => s ? `${h(s.from)} à ${h(s.to)}<small>${s.who}</small>` : '<span class="no">Fermé</span>';
+      return `<tr${i === todayIdx ? ' class="today"' : ''}><td>${DAYS[i]}</td><td>${cell(am)}</td><td>${cell(pm)}</td></tr>`;
+    }).join('')
+  }</tbody></table>`;
+
+  /* ---------- Sélecteur de design ---------- */
+  const buttons = [...document.querySelectorAll('.switch button')];
+  let active = 'd1';
+  function show(id) {
+    document.querySelectorAll('.design').forEach(d => { d.hidden = d.id !== id; });
+    buttons.forEach(b => b.setAttribute('aria-pressed', String(b.dataset.go === id)));
+    document.body.dataset.d = id.slice(1);
+    active = id;
+    scrollTo(0, 0);
+    if (id === 'd1') initBar();
+    request();
+  }
+  buttons.forEach(b => b.addEventListener('click', () => show(b.dataset.go)));
+  document.querySelectorAll('.flip').forEach(b => b.addEventListener('click', () => b.setAttribute('aria-pressed', String(b.getAttribute('aria-pressed') !== 'true'))));
+
+  /* ---------- Design 1 : barre 3D qui se charge seule ---------- */
+  const PAIRS = 5;
+  const bar = { ready: false, started: false, load: reduce ? 99 : 0 };
+  const hero = document.querySelector('.n-hero');
+  function plateTexture(T) {
+    const c = document.createElement('canvas'); c.width = c.height = 512;
+    const g = c.getContext('2d');
+    g.fillStyle = '#c42620'; g.fillRect(0, 0, 512, 512);
+    g.strokeStyle = '#a01e19'; g.lineWidth = 26;
+    g.beginPath(); g.arc(256, 256, 236, 0, Math.PI * 2); g.stroke();
+    g.beginPath(); g.arc(256, 256, 120, 0, Math.PI * 2); g.stroke();
+    g.fillStyle = '#f4f1ea'; g.textAlign = 'center'; g.textBaseline = 'middle';
+    g.font = '400 92px Anton, Impact, sans-serif'; g.fillText('25', 256, 90);
+    g.font = '500 30px "JetBrains Mono", monospace'; g.fillText('KG', 256, 440);
+    const t = new T.CanvasTexture(c); t.encoding = T.sRGBEncoding; t.anisotropy = 4; return t;
+  }
+  function initBar() {
+    if (bar.started) return;
+    bar.started = true;
+    const fail = () => { document.getElementById('bar-fallback').hidden = false; document.getElementById('bar-reload').hidden = true; };
+    if (!window.THREE) return fail();
+    const T = window.THREE, canvas = document.getElementById('bar');
+    let renderer;
+    try { renderer = new T.WebGLRenderer({ canvas, antialias: true, alpha: true }); } catch (e) { return fail(); }
+    renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
+    renderer.outputEncoding = T.sRGBEncoding;
+    const scene = new T.Scene(), camera = new T.PerspectiveCamera(32, 1, .1, 50);
+    scene.add(new T.HemisphereLight(0xf4f1ea, 0x0b0b0b, .75));
+    const key = new T.DirectionalLight(0xffffff, 1.1); key.position.set(1.5, 2.2, 2.4); scene.add(key);
+    const rim = new T.DirectionalLight(0xffffff, .55); rim.position.set(-2.5, 1, -2); scene.add(rim);
+    const group = new T.Group(); scene.add(group);
+    const steel = new T.MeshStandardMaterial({ color: 0xb9b4ab, metalness: .55, roughness: .32 });
+    const knurl = new T.MeshStandardMaterial({ color: 0x8f8a82, metalness: .5, roughness: .6 });
+    const cyl = (r, len, mat, x) => { const geo = new T.CylinderGeometry(r, r, len, 48); geo.rotateZ(Math.PI / 2); const m = new T.Mesh(geo, mat); m.position.x = x; group.add(m); };
+    cyl(.014, 1.31, knurl, 0);
+    [-1, 1].forEach(s => { cyl(.04, .03, steel, s * .67); cyl(.025, .415, steel, s * .8925); });
+    const plates = [];
+    function resize() {
+      const w = canvas.clientWidth, hh = canvas.clientHeight;
+      if (!w || !hh) return;
+      renderer.setSize(w, hh, false);
+      camera.aspect = w / hh; bar.portrait = camera.aspect < 1;
+      camera.position.set(0, bar.portrait ? .2 : .42, bar.portrait ? 4.4 : 2.95);
+      camera.lookAt(0, bar.portrait ? -.32 : -.46, 0);
+      camera.updateProjectionMatrix(); draw();
+    }
+    function draw() {
+      if (!bar.ready) return;
+      plates.forEach(m => {
+        const f = ease(clamp(bar.load - m.userData.pair, 0, 1));
+        m.visible = f > .001;
+        m.position.x = m.userData.slot + m.userData.side * (1 - f) * 1.4;
+      });
+      const r = hero.getBoundingClientRect();
+      group.rotation.y = (bar.portrait ? -.95 : -.38) + (reduce ? 0 : clamp(-r.top / r.height, 0, 1) * .5);
+      group.rotation.x = .12;
+      renderer.render(scene, camera);
+    }
+    function play() {
+      if (reduce) { bar.load = 99; draw(); return; }
+      const t0 = performance.now();
+      const step = t => { bar.load = (t - t0) / 450 - 1; draw(); if (bar.load < PAIRS + 1) requestAnimationFrame(step); };
+      requestAnimationFrame(step);
+    }
+    bar.draw = draw; bar.resize = resize;
+    document.getElementById('bar-reload').addEventListener('click', play);
+    (document.fonts ? document.fonts.load('400 92px Anton').catch(() => {}) : Promise.resolve()).then(() => {
+      const face = new T.MeshStandardMaterial({ map: plateTexture(T), roughness: .6 });
+      const side = new T.MeshStandardMaterial({ color: 0x9e1d18, roughness: .7 });
+      const geo = new T.CylinderGeometry(.225, .225, .027, 72); geo.rotateZ(Math.PI / 2);
+      for (let k = 0; k < PAIRS; k++) [-1, 1].forEach(s => {
+        const m = new T.Mesh(geo, [side, face, face]);
+        m.userData = { slot: s * (.7145 + k * .029), side: s, pair: k };
+        m.visible = false; group.add(m); plates.push(m);
+      });
+      bar.ready = true; resize(); play();
+    });
+  }
+
+  /* Jauge-barre */
+  const steps = [...document.querySelectorAll('#d1 [data-step]')];
+  const gL = [...document.querySelectorAll('.gauge__side.l i')], gR = [...document.querySelectorAll('.gauge__side.r i')];
+  const gKg = document.getElementById('g-kg');
+  function updateGauge() {
+    let n = 0;
+    steps.forEach(s => { if (s.getBoundingClientRect().top < innerHeight * .6) n = Math.max(n, +s.dataset.step); });
+    if (innerHeight + scrollY >= document.documentElement.scrollHeight - 4) n = PAIRS;
+    gL.forEach((el, i) => el.classList.toggle('on', i < n));
+    gR.forEach((el, i) => el.classList.toggle('on', i < n));
+    gKg.textContent = 20 + n * 50;
+  }
+
+  /* ---------- Design 3 : calculateur ---------- */
+  const PLATES = [
+    { kg: 25, h: 104, w: 14, c: '#d42a24' }, { kg: 20, h: 104, w: 12, c: '#f4f1ea' }, { kg: 15, h: 104, w: 10, c: '#a8a29a' },
+    { kg: 10, h: 104, w: 9, c: '#2a2a2a', b: '#a8a29a' }, { kg: 5, h: 74, w: 7, c: '#f4f1ea' }, { kg: 2.5, h: 60, w: 6, c: '#2a2a2a', b: '#a8a29a' }, { kg: 1.25, h: 50, w: 5, c: '#a8a29a' },
+  ];
+  const range = document.getElementById('calc-range');
+  function calc() {
+    const total = +range.value;
+    document.getElementById('calc-kg').textContent = fr(total);
+    let rest = (total - 25) / 2; const picked = [];
+    PLATES.forEach(p => { while (rest >= p.kg - 1e-9) { picked.push(p); rest -= p.kg; } });
+    const html = picked.map(p => `<span class="plate" style="--h:${p.h}px;--w:${p.w}px;--c:${p.c};--b:${p.b || 'transparent'}"></span>`).join('') + '<span class="rig__collar"></span>';
+    document.getElementById('rig-l').innerHTML = html; document.getElementById('rig-r').innerHTML = html;
+    document.getElementById('calc-list').textContent = picked.length ? `De chaque côté : ${picked.map(p => fr(p.kg)).join(' + ')} kg, plus le collier` : 'Barre et colliers seuls';
+  }
+  range.addEventListener('input', calc);
+  document.getElementById('calc-minus').addEventListener('click', () => { range.value = clamp(+range.value - 2.5, 25, 300); calc(); });
+  document.getElementById('calc-plus').addEventListener('click', () => { range.value = clamp(+range.value + 2.5, 25, 300); calc(); });
+  calc();
+
+  /* ---------- Boucle ---------- */
+  let queued = false;
+  function request() {
+    if (queued) return; queued = true;
+    requestAnimationFrame(() => {
+      queued = false;
+      if (active === 'd1') { updateGauge(); if (bar.ready && hero.getBoundingClientRect().bottom > 0) bar.draw(); }
+    });
+  }
+  addEventListener('scroll', request, { passive: true });
+  addEventListener('resize', () => { if (bar.resize) bar.resize(); request(); });
+  show('d1');
+})();
+</script>
+</body></html>
